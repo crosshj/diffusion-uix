@@ -1,6 +1,6 @@
 # diffusion-uix
  
-this is an attempt to hack features onto Automatic's UI.
+this is an attempt to hack features onto Automatic's UI.   
 in part, this means creating a new client, see example https://crosshj.com/diffusion-uix/
 
 ### wish list

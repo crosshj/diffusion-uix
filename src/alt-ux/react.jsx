@@ -27,8 +27,11 @@ const {
 */
 
 
-const Header = () => {
-	const handleChange = () => {};
+const Header = ({ state, trigger }) => {
+	const { checkpoint, vae } = state;
+	const handleChange = (e, key) => {
+		trigger({ key, value: e.target.value });
+	};
 	return (
 		<div style={{ margin: "0.4rem", marginBottom: 0 }}>
 			<FormControl variant="standard" sx={{ m: 1, minWidth: 300 }}>
@@ -37,8 +40,8 @@ const Header = () => {
 					size="small"
 					labelId="checkpoint-label"
 					label="Checkpoint"
-					value={10}
-					onChange={handleChange}
+					value={checkpoint}
+					onChange={(e) => handleChange(e, 'checkpoint')}
 				>
 					<MenuItem value={10}>pfg_111.ckpt [5a369d04a0]</MenuItem>
 					<MenuItem value={20}>pokemonStyle_v1.ckpt [4e84fa37d8]</MenuItem>
@@ -51,8 +54,8 @@ const Header = () => {
 					size="small"
 					labelId="vae-label"
 					label="VAE"
-					value={30}
-					onChange={handleChange}
+					value={vae}
+					onChange={(e) => handleChange(e, 'vae')}
 				>
 					<MenuItem value={10}>None</MenuItem>
 					<MenuItem value={20}>Automatic</MenuItem>
@@ -63,16 +66,18 @@ const Header = () => {
 	);
 };
 
-const Body = () => {
-	const value = 0;
-	const handleChange = () => {};
+const Body = ({ state, trigger }) => {
+	const { currentTab } = state;
+	const handleChange = (value, key) => {
+		trigger({ key, value });
+	};
 	return (
 		<div  style={{ margin: "0 auto", marginBottom: "auto" }}>
 			<Box sx={{ bgcolor: 'background.paper' }} >
 				<Box sx={{ width: "98vw", borderBottom: 1, borderColor: 'divider', bgcolor: 'background.paper' }}>
 					<Tabs
-						value={value}
-						onChange={handleChange}
+						value={currentTab}
+						onChange={(e, newValue) => handleChange(newValue, 'currentTab')}
 						variant="scrollable"
 						scrollButtons="auto"
 					>
@@ -105,6 +110,7 @@ const Body = () => {
 };
 
 const Footer = () => {
+	//console.log('-- render footer');
 	return (
 		<div id="footer">
 			<div>API  •  Github  •  Gradio  •  Reload UI</div>
@@ -132,16 +138,17 @@ const LayoutContainer = styled('div')(({ theme }) => ({
 	flexDirection: "column"
 }));
 
-const App = () => {
+const App = ({ state, trigger }) => {
+	//console.log('-- render layout');
 	return (
 		<ThemeProvider theme={theme()}>
 			<CssBaseline />
 			<LayoutContainer>
 				<LayoutItem height="auto">
-					<Header />
+					<Header state={state} trigger={trigger}/>
 				</LayoutItem>
 				<LayoutItem>
-					<Body />
+					<Body state={state} trigger={trigger} />
 				</LayoutItem>
 				<LayoutItem height="auto">
 					<Footer />
@@ -152,10 +159,42 @@ const App = () => {
 };
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(<App />);
+
+const exampleState = {
+	checkpoint: 10,
+	currentTab: 0,
+	vae: 30,
+};
+
+class ReactState {
+	constructor({ render }){
+		this.state = exampleState;
+		this.render = () => render(this);
+		this.get = this.getAll.bind(this);
+		this.trigger = this.trigger.bind(this);
+	}
+	// publish(trigger) - a state change is trigger somewhere in react, all functions subscribed to this state are called + component updates
+	// subscribe(bind) - component adds its function as a subscription to some part of state (like useState)
+
+	getAll(){
+		return this.state;
+	}
+
+	trigger(action={}){
+		const { key, value='' } = action;
+		if(key){
+			this.state[key] = value;
+		}
+		this.render();
+		return;
+	}
+}
+window.state = new ReactState({
+	render: (s) => root.render(<App state={s.get()} trigger={s.trigger} />)
+});
+
+state.trigger();
 
 window
 	.matchMedia("(prefers-color-scheme: dark)")
-	.addEventListener("change", function (e) {
-		root.render(<App />);
-	});
+	.addEventListener("change", state.trigger);

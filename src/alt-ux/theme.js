@@ -3,35 +3,37 @@ const {
 	createTheme,
 } = MaterialUI;
 
-const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-
-const theme = {
-	typography: {
-		fontSize: 13,
-	},
-	palette: {
-		mode: prefersDark ? 'dark' : 'light',
-		primary: {
-			main: colors.orange[300],
+const getTheme = () => {
+	const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+	const theme = {
+		typography: {
+			fontSize: 13,
 		},
-		secondary: {
-			main: '#19857b',
+		palette: {
+			mode: prefersDark ? 'dark' : 'light',
+			primary: {
+				main: colors.orange[300],
+			},
+			secondary: {
+				main: '#19857b',
+			},
+			error: {
+				main: colors.red.A400,
+			},
 		},
-		error: {
-			main: colors.red.A400,
-		},
-	},
-	components: {
-		MuiTab: {
-			styleOverrides: {
-				root: {
-					padding: '0.4rem 0.7rem',
-					textTransform: 'unset',
-					minWidth: '50px',
+		components: {
+			MuiTab: {
+				styleOverrides: {
+					root: {
+						padding: '0.4rem 0.7rem',
+						textTransform: 'unset',
+						minWidth: '50px',
+					},
 				},
 			},
 		},
-	},
-};
+	};
+	return createTheme(theme);
+}
 
-export default createTheme(theme);
+export default getTheme;

@@ -1,4 +1,4 @@
-const { useState } = React;
+const { useState, useEffect } = React;
 
 const {
 	CssBaseline,
@@ -27,35 +27,54 @@ const {
 	eg. <Icon sx={{ fontSize: 30 }}>add_circle</Icon>
 */
 
-const SelectList = ({ stateKey, label, children }) => {
+const useExternal = (stateKey, setFn) => {
 	const [value, setter] = useState(state.get(stateKey));
-	state.listen(stateKey, setter);
-	const onChange = (e) => state.trigger(stateKey, e.target.value);
+	const externalSetter = (...args) => {
+		const newArgs = typeof setFn === "function"
+			? [ setFn(...args) ]
+			: args;
+		state.trigger(stateKey, ...newArgs);
+	};
+	useEffect(() => {
+		const { remove } = state.listen(stateKey, setter);
+		return remove;
+	});
+	return [value, externalSetter];
+};
 
+const SelectList = ({ stateKey, label, children }) => {
+	const [value, setter] = useExternal(stateKey);
+	const { options=[], selected } = value || {};
+	const selectChildren = children || options.map((x,i) => (
+		<option value={x.value} key={stateKey+'-option-'+i}>{x.label}</option>
+	));
+	const onChange = (e) => setter({
+		options,
+		selected: e.target.value
+	});
 	return (
 		<FormControl variant="standard" sx={{ m: 1, minWidth: 300 }}>
 			<InputLabel htmlFor="checkpoint-select">{label}</InputLabel>
-			{ value === "loading" &&
+			{ (!value || value === "loading") &&
 				<Select
 					id={stateKey + '-selector'}
 					size="small"
 					label={label}
 					value="loading"
 					disabled
-					onChange={onChange}
 				>
 					<option value="loading">Loading...</option>
 				</Select>
 			}
-			{ value !== "loading" &&
+			{ (value && value !== "loading") &&
 				<Select
 					id={stateKey + '-selector'}
 					size="small"
 					label={label}
-					value={value}
+					value={selected || value}
 					onChange={onChange}
 				>
-					{ children }
+					{ selectChildren }
 				</Select>
 			}
 		</FormControl>
@@ -65,32 +84,23 @@ const SelectList = ({ stateKey, label, children }) => {
 const Header = () => {
 	return (
 		<div style={{ margin: "0.4rem", marginBottom: 0 }}>
-			<SelectList stateKey="checkpoint" label="Checkpoint">
-				<option value={10}>pfg_111.ckpt [5a369d04a0]</option>
-				<option value={20}>pokemonStyle_v1.ckpt [4e84fa37d8]</option>
-				<option value={30}>protogenV22AnimeOffi_22.safetensors [1254103966]</option>
-			</SelectList>
-			<SelectList stateKey="vae" label="VAE">
-				<option value={10}>None</option>
-				<option value={20}>Automatic</option>
-				<option value={30}>vae-ft-mse-840000-ema-pruned.ckpt</option>
-			</SelectList>
+			<SelectList stateKey="checkpoint" label="Checkpoint" />
+			<SelectList stateKey="vae" label="VAE" />
 		</div>
 	);
 };
 
 const Body = () => {
-	const [currentTab, setCurrentTab] = useState(state.get('currentTab'));
-	state.listen('currentTab', setCurrentTab);
-	const onChange = (key) => (e, newValue) => state.trigger(key, newValue);
+	const [currentTab, setCurrentTab] = useExternal('currentTab', (_, x) => x);
 
+	//TODO: tabs and pages defined by state
 	return (
 		<div  style={{ margin: "0 auto", marginBottom: "auto" }}>
-			<Box sx={{ bgcolor: 'background.paper' }} >
+			<Box>
 				<Box sx={{ width: "98vw", borderBottom: 1, borderColor: 'divider', bgcolor: 'background.paper' }}>
 					<Tabs
 						value={currentTab}
-						onChange={onChange('currentTab')}
+						onChange={setCurrentTab}
 						variant="scrollable"
 						scrollButtons="auto"
 					>
@@ -111,7 +121,8 @@ const Body = () => {
 					display: "flex",
 					justifyContent: "center",
 					alignItems: "center",
-					minHeight: '75vh', padding: '1em',
+					minHeight: '75vh',
+					padding: '1em',
 					padding: "1em",
 					border: "2px dotted",
 					marginTop: "0.5rem",

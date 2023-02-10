@@ -82,7 +82,6 @@ const Header = () => {
 const Body = () => {
 	const [currentTab, setCurrentTab] = useState(state.get('currentTab'));
 	state.listen('currentTab', setCurrentTab);
-
 	const onChange = (key) => (e, newValue) => state.trigger(key, newValue);
 
 	return (
@@ -174,9 +173,3 @@ const App = () => {
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(<App />);
-
-window
-	.matchMedia("(prefers-color-scheme: dark)")
-	.addEventListener("change", () => {
-		state.trigger("theme", getTheme())
-	});

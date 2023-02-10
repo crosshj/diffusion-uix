@@ -55,6 +55,12 @@ const initialState = {
 };
 window.state = new PubSubState({ initialState });
 
+window
+	.matchMedia("(prefers-color-scheme: dark)")
+	.addEventListener("change", () => {
+		state.trigger("theme", getTheme())
+	});
+
 //NOTE: simulate loading from network
 setTimeout(() => {
 	state.trigger("checkpoint", 30);

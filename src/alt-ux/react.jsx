@@ -94,6 +94,9 @@ const Body = () => {
 	const [tabs, setTabs] = useExternal('tabs');
 	const { options=[], selected: currentTab } = tabs || {};
 	const onChange = (_, selected) => setTabs({ options, selected });
+	const currentTabDef = options.find(x => x.value === currentTab);
+	const currentTabBody = currentTabDef ? currentTabDef.body : '';
+	//const currentTab = options?.[selected]?.label || 'TODO';
 
 	return (
 		<div  style={{ margin: "0 auto", marginBottom: "auto" }}>
@@ -126,7 +129,7 @@ const Body = () => {
 					border: "2px dotted",
 					marginTop: "0.5rem",
 					color: "#333"
-				}}>TODO</div>
+				}}>{currentTabBody}</div>
 			</Box>
 		</div>
 	);

@@ -13,6 +13,10 @@ const OptionsList = ({ selected=0, options }) => ({
 	selected,
 	options:options.map((x,i) => ({ value: i, label: x })),
 });
+const Tabs = ({ selected=0, options }) => ({
+	selected,
+	options:options.map((x,i) => ({ value: i, label: x, body: x+'-body' })),
+});
 
 class PubSubState {
 	listeners = {};
@@ -77,7 +81,7 @@ fetchFake("vae", 2000,
 	})
 );
 fetchFake("tabs", 500,
-	OptionsList({
+	Tabs({
 		selected: 0,
 		options: getTabs()
 	})

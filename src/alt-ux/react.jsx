@@ -104,6 +104,7 @@ const Body = () => {
 						onChange={onChange}
 						variant="scrollable"
 						scrollButtons="auto"
+						allowScrollButtonsMobile={true}
 					>
 						{options.map((x,i) => (
 							<Tab

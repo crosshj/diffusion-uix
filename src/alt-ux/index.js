@@ -1,3 +1,7 @@
+import getModels from './data/models.js';
+import getVAE from './data/vae.js';
+import getTabs from './data/tabs.js';
+
 import getTheme from './theme.js';
 window.getTheme = getTheme;
 
@@ -56,27 +60,26 @@ class PubSubState {
 const initialState = {
 	checkpoint: undefined,
 	vae: undefined,
+	tabs: undefined,
 	currentTab: 0,
 	theme: getTheme()
 };
 fetchFake("checkpoint", 1000,
 	OptionsList({
 		selected: 1,
-		options: [
-			"pfg_111.ckpt [5a369d04a0]",
-			"pokemonStyle_v1.ckpt [4e84fa37d8]",
-			"protogenV22AnimeOffi_22.safetensors [1254103966]",
-		]
+		options: getModels(),
 	})
 );
 fetchFake("vae", 2000,
 	OptionsList({
 		selected: 2,
-		options: [
-			"None",
-			"Automatic",
-			"vae-ft-mse-840000-ema-pruned.ckpt",
-		]
+		options: getVAE()
+	})
+);
+fetchFake("tabs", 500,
+	OptionsList({
+		selected: 0,
+		options: getTabs()
 	})
 );
 

@@ -91,29 +91,26 @@ const Header = () => {
 };
 
 const Body = () => {
-	const [currentTab, setCurrentTab] = useExternal('currentTab', (_, x) => x);
+	const [tabs, setTabs] = useExternal('tabs');
+	const { options=[], selected: currentTab } = tabs || {};
+	const onChange = (_, selected) => {
+		console.log({ _, selected })
+		setTabs({ options, selected });
+	};
 
-	//TODO: tabs and pages defined by state
 	return (
 		<div  style={{ margin: "0 auto", marginBottom: "auto" }}>
 			<Box>
 				<Box sx={{ width: "98vw", borderBottom: 1, borderColor: 'divider', bgcolor: 'background.paper' }}>
 					<Tabs
 						value={currentTab}
-						onChange={setCurrentTab}
+						onChange={onChange}
 						variant="scrollable"
 						scrollButtons="auto"
 					>
-						<Tab label="txt2img" />
-						<Tab label="img2img" />
-						<Tab label="Extras" />
-						<Tab label="PNG Info" />
-						<Tab label="Checkpoint Merger" />
-						<Tab label="Train" />
-						<Tab label="Dreambooth" />
-						<Tab label="Image Browser" />
-						<Tab label="Settings" />
-						<Tab label="Extensions" />
+						{options.map((x,i) => (
+							<Tab key={'body-tabs-' + i} label={x.label} />
+						))}
 					</Tabs>
 				</Box>
 				<div style={{

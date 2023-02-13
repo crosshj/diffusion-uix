@@ -93,10 +93,7 @@ const Header = () => {
 const Body = () => {
 	const [tabs, setTabs] = useExternal('tabs');
 	const { options=[], selected: currentTab } = tabs || {};
-	const onChange = (_, selected) => {
-		console.log({ _, selected })
-		setTabs({ options, selected });
-	};
+	const onChange = (_, selected) => setTabs({ options, selected });
 
 	return (
 		<div  style={{ margin: "0 auto", marginBottom: "auto" }}>
@@ -109,7 +106,11 @@ const Body = () => {
 						scrollButtons="auto"
 					>
 						{options.map((x,i) => (
-							<Tab key={'body-tabs-' + i} label={x.label} />
+							<Tab
+								key={'body-tabs-' + i}
+								label={x.label}
+								value={x.value}
+							/>
 						))}
 					</Tabs>
 				</Box>

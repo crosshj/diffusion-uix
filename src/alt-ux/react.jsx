@@ -96,7 +96,6 @@ const Body = () => {
 	const onChange = (_, selected) => setTabs({ options, selected });
 	const currentTabDef = options.find(x => x.value === currentTab);
 	const currentTabBody = currentTabDef ? currentTabDef.body : '';
-	//const currentTab = options?.[selected]?.label || 'TODO';
 
 	return (
 		<div  style={{ margin: "0 auto", marginBottom: "auto" }}>

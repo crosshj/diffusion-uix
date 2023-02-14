@@ -53,7 +53,7 @@ const SelectList = ({ stateKey, label, children }) => {
 		selected: e.target.value
 	});
 	return (
-		<FormControl variant="standard" sx={{ m: 1, minWidth: 300 }}>
+		<FormControl variant="standard" style={{width:"100%"}}>
 			<InputLabel htmlFor="checkpoint-select">{label}</InputLabel>
 			{ (!value || value === "loading") &&
 				<Select
@@ -83,10 +83,16 @@ const SelectList = ({ stateKey, label, children }) => {
 
 const Header = () => {
 	return (
-		<div style={{ margin: "0.4rem", marginBottom: 0 }}>
-			<SelectList stateKey="checkpoint" label="Checkpoint" />
-			<SelectList stateKey="vae" label="VAE" />
-		</div>
+		<Box sx={{ flexGrow: 1, padding: 2 }}>
+			<Grid container spacing={1} lg={10} xl={8}>
+				<Grid item xs={12} lg={6}>
+					<SelectList stateKey="checkpoint" label="Checkpoint" />
+				</Grid>
+				<Grid item xs={12} lg={6}>
+					<SelectList stateKey="vae" label="VAE" />
+				</Grid>
+			</Grid>
+		</Box>
 	);
 };
 
@@ -98,7 +104,7 @@ const Body = () => {
 	const currentTabBody = currentTabDef ? currentTabDef.body : '';
 
 	return (
-		<div  style={{ margin: "0 auto", marginBottom: "auto" }}>
+		<div style={{ margin: "1rem auto", marginBottom: "auto" }}>
 			<Box>
 				<Box sx={{ width: "98vw", borderBottom: 1, borderColor: 'divider', bgcolor: 'background.paper' }}>
 					<Tabs

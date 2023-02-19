@@ -11,6 +11,9 @@ in part, this means creating a new client, see example https://crosshj.com/diffu
 - more control over UI (TODO: expand on this idea as time allows)
 	- add features from civitai remotely
 	- recover from automatic111's failure state
+- use caddy and point UI to server
+	- https://github.com/caddyserver/caddy
+
 
 ### resources
 - [Material UI](https://mui.com/material-ui/)
